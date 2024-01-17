@@ -1,0 +1,21 @@
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  image: python:3.8
+  script:
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
+    - pytest tests/unit/
+
+deploy_cdk:
+  stage: deploy
+  image: node:latest
+  script:
+    - npm install -g aws-cdk
+    - npm install
+    - cdk deploy --require-approval never
+  only:
+    - main
