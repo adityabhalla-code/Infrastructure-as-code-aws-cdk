@@ -19,7 +19,6 @@ deploy_cdk:
   image: node:latest
   script:
     - npm install -g aws-cdk
-    - npm install
     - cdk deploy --require-approval never
   only:
     - main
