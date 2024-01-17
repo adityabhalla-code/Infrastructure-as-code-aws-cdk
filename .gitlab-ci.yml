@@ -1,7 +1,6 @@
 image: python:3.8
 before_script:
-  - apt-get update && apt-get install -y nodejs npm
-  - npm install -g aws-cdk
+  - apt-get update && apt-get install -y nodejs
 stages:
   - test
   - deploy
@@ -13,6 +12,9 @@ test:
     - pytest tests/unit/
 deploy_cdk:
   stage: deploy
+  before_script:
+    - apt-get update && apt-get install -y npm
+    - npm install -g aws-cdk
   script:
     - pip install -r requirements.txt
     - cdk deploy --require-approval never
