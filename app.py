@@ -2,10 +2,10 @@
 
 import aws_cdk as cdk
 
-from siemens_mlops_cdk.siemens_mlops_cdk_stack import SiemensMlopsCdkStack
+from mlops_cdk.model_training_cdk_stack import ModelTrainingCiCdStack
 
 
 app = cdk.App()
-SiemensMlopsCdkStack(app, "SiemensMlopsCdkStack")
+ModelTrainingCiCdStack(app, "SiemensMlopsCdkStack")
 
 app.synth()
