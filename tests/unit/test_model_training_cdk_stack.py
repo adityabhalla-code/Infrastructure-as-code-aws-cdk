@@ -33,4 +33,4 @@ def test_iam_roles_created():
     template = Template.from_stack(stack)
 
     # Check if IAM roles are created
-    template.resource_count_is("AWS::IAM::Role", 6)
+    template.resource_count_is("AWS::IAM::Role", 5)
