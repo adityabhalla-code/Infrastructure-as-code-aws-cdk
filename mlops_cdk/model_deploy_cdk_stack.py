@@ -60,8 +60,8 @@ class ModelDeployCiCdStack(Stack):
                                                            path="/model-deploy"
                                                        ),
                                                        environment=codebuild.BuildEnvironment(
-                                                           build_image=codebuild.LinuxBuildImage.AMAZON_LINUX_2_3,
-                                                           compute_type=codebuild.ComputeType.SMALL,
+                                                           build_image=codebuild.LinuxBuildImage.STANDARD_5_0,
+                                                           compute_type=codebuild.ComputeType.LARGE,
                                                            environment_variables={
                                                                'SAGEMAKER_PROJECT_NAME': codebuild.BuildEnvironmentVariable(value=project_name_param, type=BuildEnvironmentVariableType.PLAINTEXT),
                                                                'SAGEMAKER_PROJECT_ID': codebuild.BuildEnvironmentVariable(value=project_id_param, type=BuildEnvironmentVariableType.PLAINTEXT),
@@ -89,11 +89,13 @@ class ModelDeployCiCdStack(Stack):
                                                           bucket=artifacts_bucket,
                                                           include_build_id=False,
                                                           package_zip=False,
-                                                          path="/model-test"
+                                                          # path="/model-test",
+                                                          path="/model-deploy",
+                                                          name="model_package_info"
                                                       ),
                                                       environment=codebuild.BuildEnvironment(
-                                                          build_image=codebuild.LinuxBuildImage.AMAZON_LINUX_2_3,
-                                                          compute_type=codebuild.ComputeType.SMALL,
+                                                          build_image=codebuild.LinuxBuildImage.STANDARD_5_0,
+                                                          compute_type=codebuild.ComputeType.LARGE,
                                                           environment_variables={
                                                               'SAGEMAKER_PROJECT_NAME': codebuild.BuildEnvironmentVariable(value=project_name_param, type=BuildEnvironmentVariableType.PLAINTEXT),
                                                               'SAGEMAKER_PROJECT_ID': codebuild.BuildEnvironmentVariable(value=project_id_param, type=BuildEnvironmentVariableType.PLAINTEXT),
@@ -108,6 +110,8 @@ class ModelDeployCiCdStack(Stack):
         # CodePipeline for Model Deployment
         source_output = Artifact("SourceOutput")
         build_output = Artifact("BuildOutput")
+        model_package_info_output = Artifact("ModelPackageInfoOutput")
+
         model_deploy_pipeline = codepipeline.Pipeline(self, "ModelDeployPipeline",
                                                       pipeline_name=f"sagemaker-{project_name_param}-{project_id_param}-modeldeploy",
                                                       role=iam.Role(self, "ModelDeployPipelineRole",
@@ -136,7 +140,7 @@ class ModelDeployCiCdStack(Stack):
                     action_name="BuildDeploymentTemplates",
                     project=model_deploy_build_project,
                     input=source_output,
-                    outputs=[build_output],
+                    outputs=[build_output,model_package_info_output],
                     run_order=1
                 )
             ]
@@ -154,15 +158,15 @@ class ModelDeployCiCdStack(Stack):
                     parameter_overrides={
         # Parameters to override for staging deployment
                     'DataCaptureUploadPath': f"s3://{artifacts_bucket.bucket_name}/data-capture",
-                    'ModelPackageName': 'your-model-package-name',
+                    'ModelPackageName': model_package_info_output.get_param("model_package_info.txt", "ModelPackageName"),
                     'StageName': 'staging',
                     'EndpointInstanceCount': '1',
-                    'ModelExecutionRoleArn': 'arn:aws:iam::account-id:role/your-role',
+                    'ModelExecutionRoleArn': model_package_info_output.get_param("model_package_info.txt","ModelExecutionRoleArn"),
                     'EndpointInstanceType': 'ml.m5.large',
                     'SamplingPercentage': '100',
                     'SageMakerProjectName': project_name_param
                     },
-                    extra_inputs=[build_output],
+                    extra_inputs=[build_output,model_package_info_output],
                     run_order=1
                 )
             ]
