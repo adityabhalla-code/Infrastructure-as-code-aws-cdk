@@ -9,7 +9,7 @@ def test_s3_bucket_created():
     template = Template.from_stack(stack)
 
     # Check if an S3 bucket is created
-    template.resource_count_is("AWS::S3::Bucket", 1)
+    template.resource_count_is("AWS::S3::Bucket", 2)
 
 def test_codebuild_project_created():
     app = cdk.App(context={"SageMakerProjectId": "test-id", "SageMakerProjectName": "test-project"})
