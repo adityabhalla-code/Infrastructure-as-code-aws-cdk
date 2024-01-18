@@ -1,65 +1,43 @@
 
-# Welcome to your CDK Python project!
+# Siemens-poc-aws-mlops-cdk
+> ### Cdk toolkit for model building ci pipeline
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`siemens_mlops_cdk_stack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+This projects deploy the aws resources to build a ci pipeline for model training.
+using AWS clouformation toolkit and is deployed via gitlab CI.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## MLOPS architecture
+![MLOPS Architecture](./design/arch.png)
 
-This project is set up like a standard Python project.  The initialization process also creates
-a virtualenv within this project, stored under the .venv directory.  To create the virtualenv
-it assumes that there is a `python3` executable in your path with access to the `venv` package.
-If for any reason the automatic creation of the virtualenv fails, you can create the virtualenv
-manually once the init process completes.
-
-To manually create a virtualenv on MacOS and Linux:
-
-```
-$ python3 -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-You can now begin exploring the source code, contained in the hello directory.
-There is also a very trivial test included that can be run like this:
-
-```
-$ pytest
-```
-
-To add additional dependencies, for example other CDK libraries, just add to
-your requirements.txt file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+## AWS Resources Overview
+### 1. AWS CodeCommit Repository
+    Resource: source_repo
+    Description: Acts as the source code repository for the model training pipeline.
+    Usage: Stores the source code which, upon updates, triggers the CI/CD pipeline.
+### 2. AWS S3 Bucket
+    Resource: artifacts_bucket
+    Description: Used to store artifacts generated during the build and deployment processes.
+    Usage: Ensures the retention of build and deployment history, critical for rollback and auditing.
+### 3. AWS EventBridge Rule
+    Resource: code_commit_rule
+    Description: Defines a rule that triggers on changes to the main branch of the CodeCommit repository.
+    Usage: Automates the pipeline execution upon code changes, facilitating continuous integration.
+### 4. AWS CodeBuild Project
+    Resource: code_build_project
+    Description: Responsible for building the model training workflow from the repository.
+    Usage: Executes the build process, including the creation and execution of SageMaker pipelines.
+### 5. AWS CodePipeline
+    Resource: model_build_pipeline
+    Description: Defines the stages and actions of the CI/CD pipeline.
+    Usage: Orchestrates the workflow from source code retrieval to building and storing the model.
+### 6. IAM Role for AWS CodePipeline
+    Resource: pipeline_role
+    Description: An IAM role with permissions for AWS CodePipeline to access necessary AWS resources.
+    Usage: Grants CodePipeline access to S3 for storing and retrieving pipeline artifacts.
+### 7. Event Rule Target for AWS CodePipeline
+    Resource: code_commit_rule
+    Description: Links the EventBridge rule to trigger the CodePipeline.
+    Usage: Enables automatic pipeline execution in response to source code changes.
+### 8. CloudFormation Outputs
+    Resource: CfnOutput
+    Description: Provides easy access to key resource identifiers like bucket name and pipeline name.
+    Usage: Useful for quickly retrieving the names of crucial resources post-deployment.
