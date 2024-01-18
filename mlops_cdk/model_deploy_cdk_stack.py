@@ -31,7 +31,7 @@ class ModelDeployCiCdStack(Stack):
 
         # S3 Bucket for Artifacts
         artifacts_bucket = s3.Bucket(self, "MlOpsArtifactsBucket",
-                                     bucket_name=f"sagemaker-project-{project_id_param}",
+                                     bucket_name=f"sagemaker-deploy-project-{project_id_param}",
                                      removal_policy=RemovalPolicy.RETAIN)
 
         # Reference to an existing CodeCommit Repository for Model Deployment
@@ -152,7 +152,15 @@ class ModelDeployCiCdStack(Stack):
                     stack_name=f"sagemaker-{project_name_param}-{project_id_param}-deploy-staging",
                     admin_permissions=True,
                     parameter_overrides={
-                        # Parameters to override for staging deployment
+        # Parameters to override for staging deployment
+                    'DataCaptureUploadPath': f"s3://{artifacts_bucket.bucket_name}/data-capture",
+                    'ModelPackageName': 'your-model-package-name',
+                    'StageName': 'staging',
+                    'EndpointInstanceCount': '1',
+                    'ModelExecutionRoleArn': 'arn:aws:iam::account-id:role/your-role',
+                    'EndpointInstanceType': 'ml.m5.large',
+                    'SamplingPercentage': '100',
+                    'SageMakerProjectName': project_name_param
                     },
                     extra_inputs=[build_output],
                     run_order=1
