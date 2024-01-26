@@ -38,7 +38,7 @@ class ModelDeployCiCdStack(Stack):
         model_deploy_repo = codecommit.Repository.from_repository_name(
             self,
             "ModelDeployCodeCommitRepository",
-            "sagemaker-siemens-deploy-2-p-k0uqksib99sd-modeldeploy"
+            "deploy-code"
         )
 
         # CodeCommit Repository for Model Deployment

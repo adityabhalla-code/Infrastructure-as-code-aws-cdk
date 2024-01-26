@@ -16,7 +16,7 @@ class ModelTrainingCiCdStack(Stack):
         #
         # Define the code commit repository
         source_repo = codecommit.Repository.from_repository_name(
-            self, "SourceRepo", "sagemaker-siemens-build-01-16-06-51-43-p-oldzx0zjfxee-modelbuild")
+            self, "SourceRepo", "source-code")
 
         # Parameters
         project_name = self.node.try_get_context("SageMakerProjectName")
