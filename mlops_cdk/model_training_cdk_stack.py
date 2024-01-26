@@ -10,9 +10,9 @@ class ModelTrainingCiCdStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
-        # # Create a new S3 bucket
-        demo_bucket = s3.Bucket(self, "MyDemoBucket",
-                                removal_policy=RemovalPolicy.DESTROY)  # Ensures bucket is deleted when stack is destroyed
+        # # # Create a new S3 bucket
+        # demo_bucket = s3.Bucket(self, "MyDemoBucket",
+        #                         removal_policy=RemovalPolicy.DESTROY)  # Ensures bucket is deleted when stack is destroyed
         #
         # Define the code commit repository
         source_repo = codecommit.Repository.from_repository_name(

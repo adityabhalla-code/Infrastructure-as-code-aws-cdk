@@ -7,7 +7,7 @@ from mlops_cdk.model_deploy_cdk_stack import ModelDeployCiCdStack
 
 app = cdk.App()
 # Create the Model Training CI/CD Stack
-# ModelTrainingCiCdStack(app, "SiemensMlopsCdkStack")
+ModelTrainingCiCdStack(app, "SiemensMlopsCdkStack")
 # Create the Model Deployment CI/CD Stack
 ModelDeployCiCdStack(app, "SiemensMlopsDeploymentCdkStack")
 app.synth()
