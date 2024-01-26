@@ -17,6 +17,6 @@ deploy_cdk:
     - npm install -g aws-cdk
   script:
     - pip install -r requirements.txt
-    - cdk deploy --require-approval never
+    - cdk deploy --all --require-approval never
   only:
     - main
