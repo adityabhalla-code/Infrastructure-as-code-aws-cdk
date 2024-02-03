@@ -2,8 +2,8 @@
 # aws-mlops-cdk
 > ### Cdk toolkit for model building ci pipeline
 
-This projects deploy the aws resources to build a ci pipeline for model training.
-using AWS clouformation toolkit and is deployed via gitlab CI.
+This projects deploy the aws resources to build a ci pipeline for model training and model deployment based on the below architecture.
+using AWS clouformation toolkit.
 
 ## MLOPS architecture
 ![MLOPS Architecture](./design/arch.png)
