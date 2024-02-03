@@ -1,5 +1,5 @@
 
-# Siemens-poc-aws-mlops-cdk
+# aws-mlops-cdk
 > ### Cdk toolkit for model building ci pipeline
 
 This projects deploy the aws resources to build a ci pipeline for model training.
